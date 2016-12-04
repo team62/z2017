@@ -30,12 +30,13 @@ void lift (int power) {
 
 pid clawPID;
 void clawControlInit () {
-	clawPID.kP = 0.3;
+	clawPID.kP = 0.2;
 	clawPID.kI = 0.01;
 	clawPID.kD = 0.7;
 	clawPID.target = SensorValue[clawPot];
 }
 
+int lastSensorValue;
 task clawControl () {
 	clawControlInit();
 	while(true) {
@@ -44,7 +45,7 @@ task clawControl () {
 		clawPID.integral += clawPID.error;
 		if(clawPID.error == 0 || abs(clawPID.error)>200)
 			clawPID.integral = 0;
-		else if(clawPID.error>1000)
+		else if(abs(clawPID.error)>1000)
 			clawPID.error = 1000;
 		if(clawPID.derivative==0 && clawPID.integral==0)
 			clawPID.target = SensorValue[clawPot];
@@ -54,6 +55,8 @@ task clawControl () {
 		clawPID.derivative = clawPID.error - clawPID.lastError;
 
 		clawPID.lastError = clawPID.error;
+
+		lastSensorValue = SensorValue[clawPot];
 
 		motor[claw] = clawPID.kP*clawPID.error+clawPID.kI*clawPID.integral+clawPID.kD*clawPID.derivative;
 
