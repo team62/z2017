@@ -64,8 +64,11 @@ task clawControl () {
 	}
 }
 
+bool clawMovingOut = false;
+bool clawInMotion = false;
+
 task main() {
-	bool clawMovingOut = false;
+
 	startTask(clawControl);
 
 	while(true) {
@@ -85,11 +88,16 @@ task main() {
 				clawPID.target = SensorValue[clawPot];
 			clawPID.target = clawPID.target - 70;
 			clawMovingOut = false;
+			clawInMotion = true;
 		} else if (vexRT[Btn6D]) {
 			if(!clawMovingOut)
 				clawPID.target = SensorValue[clawPot];
 			clawPID.target = clawPID.target + 70;
 			clawMovingOut = true;
+			clawInMotion = true;
+		} else if (clawInMotion) {
+			clawInMotion = false;
+			clawPID.target = SensorValue[clawPot]-((!clawMovingOut)*60);
 		}
 
 		delay(25);
