@@ -97,7 +97,7 @@ task main() {
 			clawInMotion = true;
 		} else if (clawInMotion) {
 			clawInMotion = false;
-			clawPID.target = SensorValue[clawPot]-((!clawMovingOut)*60);
+			clawPID.target = SensorValue[clawPot]-((!clawMovingOut)*70);
 		}
 
 		delay(25);
